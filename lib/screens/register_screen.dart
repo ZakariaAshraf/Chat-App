@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,6 +15,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final FirebaseFirestore _firestoree =FirebaseFirestore.instance;
   TextEditingController emailController = new TextEditingController();
 TextEditingController passwordController = new TextEditingController();
 bool isVisabile = false;
@@ -115,6 +117,13 @@ var formKey = GlobalKey<FormState>();
         EasyLoading.dismiss();
         Navigator.pop(context);
         print(credential.user?.uid);
+
+        _firestoree.collection("Users").doc(credential.user!.uid).set(
+          {
+            'uid' : credential.user!.uid,
+            'email':emailController,
+          },
+        );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           EasyLoading.dismiss();

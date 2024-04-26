@@ -1,6 +1,8 @@
 import 'package:chatapp/screens/chat_screen.dart';
+import 'package:chatapp/screens/home_screen.dart';
 import 'package:chatapp/widgets/custom_matrial_button.dart';
 import 'package:chatapp/widgets/custom_text_form_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,11 +12,14 @@ class SignIn extends StatefulWidget {
   SignIn({Key? key}) : super(key: key);
   static String RouteName = "Sign In Screen";
 
+
   @override
   State<SignIn> createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
+  final FirebaseFirestore _firestoree =FirebaseFirestore.instance;
+
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   bool isVisabile = false;
@@ -85,8 +90,14 @@ class _SignInState extends State<SignIn> {
             .signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
         EasyLoading.dismiss();
-        Navigator.pushNamedAndRemoveUntil(context, ChatScreen.RouteName, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.RouteName, (route) => false);
         print(credential.user?.uid);
+        _firestoree.collection("Users").doc(credential.user!.uid).set(
+          {
+            'uid' : credential.user!.uid,
+            'email':emailController,
+          },
+        );
 
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
