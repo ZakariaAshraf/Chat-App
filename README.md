@@ -8,7 +8,7 @@ This Flutter chat app allows users to communicate in real time. It uses Firebase
  fix some issues
   
 !Chat App Screenshot
-<p align="center"><img width=50% src=""></p>
+<p align="center"><img width=50% src="chat_app.gif"></p>
 
 
 
